@@ -3,8 +3,10 @@ package com.example.InventoryManager.narola.serviceImpl;
 import com.example.InventoryManager.Caching.InMemoryCache;
 import com.example.InventoryManager.narola.Model.ProductSearchRequest;
 import com.example.InventoryManager.narola.Model.ProductSearchResponse;
+import com.example.InventoryManager.narola.dao.CategoriesDao;
 import com.example.InventoryManager.narola.dao.ProductCriteriaImpl;
 import com.example.InventoryManager.narola.dao.ProductsDao;
+import com.example.InventoryManager.narola.entity.Categories;
 import com.example.InventoryManager.narola.entity.Products;
 import com.example.InventoryManager.narola.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +27,19 @@ public class ProductServiceImpl implements ProductService {
     private ProductsDao productsDao;
 
     @Autowired
+    private CategoriesDao categoriesDao;
+
+    @Autowired
     private InMemoryCache<Integer,Products> inMemoryCache;
 
     @Override
-    public List<ProductSearchResponse> getAll(ProductSearchRequest request) throws ValidationException {
+    public List<ProductSearchResponse> getAll(ProductSearchRequest request) /*throws ValidationException*/ {
 
-        if(request==null) throw new ValidationException("Invalid Request");
-        if(request.getCatogId() < 0) throw new ValidationException("Invalid Category selected");
-
+        /*if(request==null) throw new ValidationException("Invalid Request");*/
+        /*if(request.getCatogId() < 0) throw new ValidationException("Invalid Category selected");*/
+        if(request.getRecordPerPage()==0){
+            request.setRecordPerPage(5);
+        }
         Pageable paging = PageRequest.of(request.getPageNo()-1,request.getRecordPerPage());
 
         List<Products> productEntity = productsDao.FindProduct(
@@ -81,6 +88,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Products getById(int id) {
         return productsDao.findById(id).get();
+    }
+
+    @Override
+    public List<ProductSearchResponse> getAllProducts() {
+        List<Products> productsList = productsDao.findAll();
+        return entityToModel(productsList);
+    }
+
+    @Override
+    public List<Categories> getAllCategories() {
+        return categoriesDao.findAll();
     }
 
     private List<ProductSearchResponse> entityToModel(List<Products> productEntity){

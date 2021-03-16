@@ -45,21 +45,39 @@ public class ProductCriteriaImpl implements ProductCriteria {
         CriteriaQuery<Products> cq = cb.createQuery(Products.class);
         Root<Products> productsRoot = cq.from(Products.class);
 
-        List<Predicate> list = new ArrayList<>();
-        list.add(cb.like(productsRoot.get("productName"),"%"+value+"%"));
-        list.add(cb.like(productsRoot.get("description"),"%"+value+"%"));
 
-        Predicate PredicateById = cb.equal(productsRoot.get("category"),catId);
-
-        Predicate pre1 = cb.or(list.toArray(new Predicate[list.size()]));
-        Predicate pre2 = cb.and(PredicateById);
-
-        if(sortOrder.equalsIgnoreCase("asc")){
-            cq.where(pre1,pre2).orderBy(cb.asc(productsRoot.get(sortBy)));
-        }else{
-            cq.where(pre1,pre2).orderBy(cb.desc(productsRoot.get(sortBy)));
+        if(/*value.equalsIgnoreCase("") && catId==0*/isEmpty(value,catId)){
+            cq.select(productsRoot);
+            if(sortOrder.equalsIgnoreCase("asc")){
+                cq.where().orderBy(cb.asc(productsRoot));
+            }else{
+                cq.where().orderBy(cb.desc(productsRoot));
+            }
         }
+        else if(value.equals("")) {
+            Predicate predicateById = cb.equal(productsRoot.get("category"),catId);
+            if(sortOrder.equalsIgnoreCase("asc")){
+                cq.where(predicateById).orderBy(cb.asc(productsRoot.get(sortBy)));
+            }else{
+                cq.where(predicateById).orderBy(cb.desc(productsRoot.get(sortBy)));
+            }
+        }
+        else {
+            List<Predicate> list = new ArrayList<>();
+            list.add(cb.like(productsRoot.get("productName"), "%" + value + "%"));
+            list.add(cb.like(productsRoot.get("description"), "%" + value + "%"));
 
+            Predicate PredicateById = cb.equal(productsRoot.get("category"), catId);
+
+            Predicate pre1 = cb.or(list.toArray(new Predicate[list.size()]));
+            Predicate pre2 = cb.and(PredicateById);
+
+            if (sortOrder.equalsIgnoreCase("asc")) {
+                cq.where(pre1, pre2).orderBy(cb.asc(productsRoot.get(sortBy)));
+            } else {
+                cq.where(pre1, pre2).orderBy(cb.desc(productsRoot.get(sortBy)));
+            }
+        }
         TypedQuery<Products> query = entityManager.createQuery(cq);
 
         int totalRows = query.getResultList().size();
@@ -69,6 +87,10 @@ public class ProductCriteriaImpl implements ProductCriteria {
         Page<Products> results = new PageImpl<Products>(query.getResultList(),page,totalRows);
         List<Products> resultList = results.getContent();
         return resultList;
+    }
+
+    private boolean isEmpty(String value, int catId){
+        return value.trim().equals("") && catId==0;
     }
 
 }

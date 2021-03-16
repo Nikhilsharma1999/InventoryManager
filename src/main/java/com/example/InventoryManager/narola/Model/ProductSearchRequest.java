@@ -1,12 +1,12 @@
 package com.example.InventoryManager.narola.Model;
 
 public class ProductSearchRequest {
-    private int catogId;
-    private String searchStr;
-    private String sortBy;
-    private String sortOrder;
-    private int recordPerPage;
-    private int pageNo;
+    private int catogId = 0;
+    private String searchStr = "";
+    private String sortBy = "productId";
+    private String sortOrder = "asc";
+    private int recordPerPage = 10;
+    private int pageNo = 1;
 
     public int getCatogId() {
         return catogId;
