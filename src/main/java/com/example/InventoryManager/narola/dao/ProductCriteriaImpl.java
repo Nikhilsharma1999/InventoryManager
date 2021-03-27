@@ -46,7 +46,7 @@ public class ProductCriteriaImpl implements ProductCriteria {
         Root<Products> productsRoot = cq.from(Products.class);
 
 
-        if(/*value.equalsIgnoreCase("") && catId==0*/isEmpty(value,catId)){
+        if(isEmpty(value,catId)){
             cq.select(productsRoot);
             if(sortOrder.equalsIgnoreCase("asc")){
                 cq.where().orderBy(cb.asc(productsRoot));
@@ -57,9 +57,17 @@ public class ProductCriteriaImpl implements ProductCriteria {
         else if(value.equals("")) {
             Predicate predicateById = cb.equal(productsRoot.get("category"),catId);
             if(sortOrder.equalsIgnoreCase("asc")){
-                cq.where(predicateById).orderBy(cb.asc(productsRoot.get(sortBy)));
+                if(!sortBy.trim().equals("")) {
+                    cq.where(predicateById).orderBy(cb.asc(productsRoot.get(sortBy)));
+                }else{
+                    cq.where(predicateById).orderBy(cb.asc(productsRoot));
+                }
             }else{
-                cq.where(predicateById).orderBy(cb.desc(productsRoot.get(sortBy)));
+                if(!sortBy.trim().equals("")) {
+                    cq.where(predicateById).orderBy(cb.desc(productsRoot.get(sortBy)));
+                }else {
+                    cq.where(predicateById).orderBy(cb.desc(productsRoot));
+                }
             }
         }
         else {

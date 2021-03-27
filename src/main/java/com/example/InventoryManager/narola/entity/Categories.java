@@ -1,6 +1,9 @@
 package com.example.InventoryManager.narola.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,8 +17,8 @@ public class Categories {
     private int catogId;
     private String catogName;
 
-    @OneToMany(mappedBy = "category")
-    @JsonIgnoreProperties("category")
+    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Products> product = new ArrayList<>();
 
     public int getCatogId() {

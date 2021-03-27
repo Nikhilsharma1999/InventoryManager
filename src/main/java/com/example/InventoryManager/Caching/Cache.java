@@ -1,5 +1,7 @@
 package com.example.InventoryManager.Caching;
 
+import com.example.InventoryManager.narola.Model.ProductsModel;
+
 import java.util.List;
 import java.util.Optional;
 

@@ -1,12 +1,13 @@
 package com.example.InventoryManager.narola.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "products")
-public class Products {
+public class Products implements Serializable {
+    private static final long serialVersionUID = 2526569736717515287L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
@@ -14,10 +15,9 @@ public class Products {
     private String description;
     /*private int catogId;*/
 
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catogId", nullable = false)
-    //@JsonIgnore
-    @JsonIgnoreProperties("product")
     private Categories category;
 
     public int getProductId() {
