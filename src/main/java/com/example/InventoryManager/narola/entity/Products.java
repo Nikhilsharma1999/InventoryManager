@@ -1,8 +1,11 @@
 package com.example.InventoryManager.narola.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -19,6 +22,11 @@ public class Products implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catogId", nullable = false)
     private Categories category;
+
+  //  @JsonIgnoreProperties("products")
+    @ManyToMany(mappedBy = "products",fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Cart> carts=new HashSet<>();
 
     public int getProductId() {
         return productId;
@@ -46,5 +54,13 @@ public class Products implements Serializable {
     }
     public void setCategory(Categories category) {
         this.category = category;
+    }
+
+    public Set<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(Set<Cart> carts) {
+        this.carts = carts;
     }
 }

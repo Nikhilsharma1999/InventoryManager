@@ -15,12 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/_products")
 public class ProductController {
+
     @Autowired
     @Qualifier("ProductServiceAlias")
     private ProductService productService;
 
     @CrossOrigin
-    @PostMapping/*("/_products")*/
+    @PostMapping
     public ResponseEntity<ProductSearchResponseWrapper> getProducts(@RequestBody(required = false) ProductSearchRequest request) /*throws ValidationException*/ {
         List<ProductSearchResponse> products = null;
         if(request==null){

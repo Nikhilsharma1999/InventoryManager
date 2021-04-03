@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class HomePageController {
 
-    @RequestMapping("/")
+    /*@RequestMapping("/")
     public String HomePage(){
         return "redirect:/inventory/list";
-    }
+    }*/
 }
